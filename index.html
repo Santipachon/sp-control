@@ -62,7 +62,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── HEADER ── */
-.hdr{padding:calc(var(--safe-t)+28px) 28px 0}
+.hdr{padding:calc(var(--safe-t)+32px) 28px 0}
 .hdr-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .hdr-left{flex:1;min-width:0;padding-right:16px}
 .pg-greeting{font-size:11px;color:var(--sub);letter-spacing:.4px;margin-bottom:5px;font-weight:300}
@@ -322,7 +322,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .color-dot.sel{border-color:var(--text);transform:scale(1.1)}
 
 /* ── FAB ── */
-.fab{position:fixed;bottom:calc(var(--safe-b)+76px);right:16px;z-index:50;width:46px;height:46px;background:var(--text);color:var(--white);border:none;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(24,24,20,.22);transition:all .2s}
+.fab{position:fixed;bottom:calc(var(--safe-b)+88px);right:14px;z-index:50;width:44px;height:44px;background:var(--text);color:var(--white);border:none;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(24,24,20,.22);transition:all .2s}
 .fab:active{transform:scale(.9)}
 
 /* ── MOTIV BANNER ── */
@@ -331,12 +331,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .motiv b{font-weight:500}
 
 /* ── BOTTOM NAV ── */
-.bnav{flex-shrink:0;background:rgba(248,248,246,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:12px 8px calc(var(--safe-b)+10px);display:flex;justify-content:space-around;z-index:10}
+.bnav{flex-shrink:0;background:rgba(248,248,246,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:14px 12px calc(var(--safe-b)+14px);display:flex;justify-content:space-around;align-items:flex-end;z-index:10}
 .nb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--sub2);transition:color .15s;font-family:'DM Sans',sans-serif;min-width:56px}
 .nb.active{color:var(--text)}
 .nb-ico{font-size:20px;line-height:1}
 .nb-lbl{font-size:9px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;margin-top:1px}
-.nb-cierre{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 16px;border:none;background:var(--text);color:var(--white);border-radius:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;min-width:64px}
+.nb-cierre{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 18px;border:none;background:var(--text);color:var(--white);border-radius:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;min-width:68px}
 .nb-cierre:active{opacity:.7}
 .nb-cierre .nb-ico{font-size:16px}
 .nb-cierre .nb-lbl{font-size:9px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
@@ -981,8 +981,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 // ══════════════════════════════════════════
 // SUPABASE CONFIG — reemplaza con tus claves
 // ══════════════════════════════════════════
-const SUPABASE_URL = 'https://ffsyrjmidambnimuphdg.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmc3lyam1pZGFtYm5pbXVwaGRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTI5MjcsImV4cCI6MjA5MTA4ODkyN30.6aN_EBWbfhIxAUlp1w5M8fmoYmfOnJb6qFgx8jwvyVI';
+const SUPABASE_URL = 'REEMPLAZA_CON_TU_SUPABASE_URL';
+const SUPABASE_KEY = 'REEMPLAZA_CON_TU_SUPABASE_ANON_KEY';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════
@@ -1427,10 +1427,10 @@ function buildProjects(){
         <span class="chip ${p.status==='active'?'chip-g':p.status==='paused'?'chip-y':'chip-n'}">${p.status==='active'?'Activo':p.status==='paused'?'Pausado':'Listo'}</span>
       </div>
       ${p.stack?`<div style="font-size:11px;color:var(--sub2);margin-bottom:4px">${p.stack}</div>`:''}
-      ${p.desc?`<div class="proj-desc">${p.desc}</div>`:''}
+      ${p.description?`<div class="proj-desc">${p.description}</div>`:''}
       <div class="pbar"><div class="pfill ${pcColor(pct)}" style="width:${pct}%"></div></div>
       <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--sub)"><span>${pct}%</span><span>${(p.tasks||[]).filter(t=>t.status==='done').length}/${(p.tasks||[]).length} tareas</span></div>
-      ${p.next?`<div class="proj-next"><span class="proj-next-lbl">Siguiente:</span> ${p.next}</div>`:''}`;
+      ${p.next_step?`<div class="proj-next"><span class="proj-next-lbl">Siguiente:</span> ${p.next_step}</div>`:''}`;
     el.addEventListener('click',()=>openProjDetail(p.id));
     wrap.appendChild(el);
   });
@@ -1441,7 +1441,7 @@ function openProjDetail(id){
   document.getElementById('dp-title').textContent=p.name;
   const pct=calcProjPct(p);
   document.getElementById('dp-chips').innerHTML=`<span class="chip ${p.status==='active'?'chip-g':p.status==='paused'?'chip-y':'chip-n'}">${p.status==='active'?'Activo':p.status==='paused'?'Pausado':'Listo'}</span>${p.stack?`<span class="chip chip-n">${p.stack}</span>`:''}`;
-  document.getElementById('dp-desc').textContent=p.desc||'';
+  document.getElementById('dp-desc').textContent=p.description||'';
   const f=document.getElementById('dp-pbar'); f.style.width=pct+'%'; f.className='pfill '+pcColor(pct);
   document.getElementById('dp-meta').innerHTML=`<span>${pct}% completado</span><span>${(p.tasks||[]).filter(t=>t.status==='done').length}/${(p.tasks||[]).length} tareas</span>`;
   buildGoals(p); buildKanban(p); openDetail('detail-proj');
@@ -1518,10 +1518,10 @@ async function saveProj(){
   const isEdit=!!_editProjId;
   const proj={
     id:_editProjId||uid(), user_id:currentUser.id,
-    name, desc:document.getElementById('p-desc').value.trim(),
+    name, description:document.getElementById('p-desc').value.trim(),
     status:document.getElementById('p-status').value,
     stack:document.getElementById('p-stack').value.trim(),
-    next:document.getElementById('p-next').value.trim(),
+    next_step:document.getElementById('p-next').value.trim(),
     tasks:isEdit?D.projects.find(p=>p.id===_editProjId)?.tasks||[]:[],
     goals:isEdit?D.projects.find(p=>p.id===_editProjId)?.goals||[]:[],
     created_at:new Date().toISOString()
@@ -1538,10 +1538,10 @@ function editActiveProj(){
   const p=D.projects.find(x=>x.id===_activeProjId); if(!p)return;
   _editProjId=p.id;
   document.getElementById('p-name').value=p.name||'';
-  document.getElementById('p-desc').value=p.desc||'';
+  document.getElementById('p-desc').value=p.description||'';
   document.getElementById('p-status').value=p.status||'active';
   document.getElementById('p-stack').value=p.stack||'';
-  document.getElementById('p-next').value=p.next||'';
+  document.getElementById('p-next').value=p.next_step||'';
   openModal('modal-proj');
 }
 
@@ -1551,10 +1551,10 @@ function buildSprint(){
   const sp=D.sprint;
   document.getElementById('sprint-name').textContent=sp.name;
   document.getElementById('sprint-goal').textContent=sp.goal||'';
-  document.getElementById('sprint-dates').textContent=`${fmtDate(sp.start)} → ${fmtDate(sp.end)}`;
+  document.getElementById('sprint-dates').textContent=`${fmtDate(sp.start_date)} → ${fmtDate(sp.end_date)}`;
   const row=document.getElementById('sprint-days-row'); row.innerHTML='';
   const lbls=['L','M','X','J','V','S','D'];
-  const sd=new Date(sp.start+'T12:00:00'),ed=new Date(sp.end+'T12:00:00');
+  const sd=new Date(sp.start_date+'T12:00:00'),ed=new Date(sp.end_date+'T12:00:00');
   const nd=new Date(); nd.setHours(0,0,0,0);
   let cur=new Date(sd);
   while(cur<=ed){
@@ -1568,7 +1568,7 @@ function buildSprint(){
 
 async function saveSprint(){
   const name=document.getElementById('sp-name').value.trim(); if(!name){toast('Escribe el nombre del sprint');return;}
-  const sp={id:D.sprint?.id||uid(),user_id:currentUser.id,name,goal:document.getElementById('sp-goal').value.trim(),start:document.getElementById('sp-start').value||todayISO(),end:document.getElementById('sp-end').value||todayISO()};
+  const sp={id:D.sprint?.id||uid(),user_id:currentUser.id,name,goal:document.getElementById('sp-goal').value.trim(),start_date:document.getElementById('sp-start').value||todayISO(),end_date:document.getElementById('sp-end').value||todayISO()};
   showSync();
   if(D.sprint){ await sb.from('sprints').update(sp).eq('id',sp.id); }
   else{ await sb.from('sprints').insert(sp); }
@@ -1778,11 +1778,11 @@ function openFinModal(type){
 
 async function saveFin(){
   const type=document.getElementById('fin-type').value;
-  const desc=document.getElementById('fin-desc').value.trim();
+  const fdesc=document.getElementById('fin-desc').value.trim();
   const amount=parseFloat(document.getElementById('fin-amount').value);
-  if(!desc||!amount){toast('Completa descripción y monto');return;}
+  if(!fdesc||!amount){toast('Completa descripción y monto');return;}
   const tx={
-    id:uid(),user_id:currentUser.id,type,desc,
+    id:uid(),user_id:currentUser.id,type,description:document.getElementById('fin-desc').value.trim(),
     amount,cat:document.getElementById('fin-cat').value,
     persona:document.getElementById('fin-persona').value.trim(),
     due:document.getElementById('fin-due').value||null,
@@ -1818,7 +1818,7 @@ function buildFinanzas(){
     deudasWrap.innerHTML='';
     deudas.forEach(f=>{
       const el=document.createElement('div'); el.className='fin-item';
-      el.innerHTML=`<div class="fin-icon" style="background:#fdf1f0">💸</div><div class="fin-info"><div class="fin-name">${f.desc}</div><div class="fin-meta">${f.persona?`A: ${f.persona} · `:''}${f.due?`Vence: ${fmtDate(f.due)}`:'Sin fecha'}</div></div><div class="fin-amount neg">${fmtMoney(f.amount)}</div>`;
+      el.innerHTML=`<div class="fin-icon" style="background:#fdf1f0">💸</div><div class="fin-info"><div class="fin-name">${f.description}</div><div class="fin-meta">${f.persona?`A: ${f.persona} · `:''}${f.due?`Vence: ${fmtDate(f.due)}`:'Sin fecha'}</div></div><div class="fin-amount neg">${fmtMoney(f.amount)}</div>`;
       el.addEventListener('click',()=>markFinDone(f.id));
       deudasWrap.appendChild(el);
     });
@@ -1832,7 +1832,7 @@ function buildFinanzas(){
     cobrarWrap.innerHTML='';
     cobrar.forEach(f=>{
       const el=document.createElement('div'); el.className='fin-item';
-      el.innerHTML=`<div class="fin-icon" style="background:var(--g-bg)">💰</div><div class="fin-info"><div class="fin-name">${f.desc}</div><div class="fin-meta">${f.persona?`De: ${f.persona} · `:''}${f.due?`Vence: ${fmtDate(f.due)}`:'Sin fecha'}</div></div><div class="fin-amount pos">${fmtMoney(f.amount)}</div>`;
+      el.innerHTML=`<div class="fin-icon" style="background:var(--g-bg)">💰</div><div class="fin-info"><div class="fin-name">${f.description}</div><div class="fin-meta">${f.persona?`De: ${f.persona} · `:''}${f.due?`Vence: ${fmtDate(f.due)}`:'Sin fecha'}</div></div><div class="fin-amount pos">${fmtMoney(f.amount)}</div>`;
       el.addEventListener('click',()=>markFinDone(f.id));
       cobrarWrap.appendChild(el);
     });
@@ -1847,7 +1847,7 @@ function buildFinanzas(){
     movs.forEach(f=>{
       const isIncome=f.type==='ingreso';
       const el=document.createElement('div'); el.className='fin-item';
-      el.innerHTML=`<div class="fin-icon" style="background:${FIN_COLORS[f.cat]||'#e4e4de'}20">${FIN_ICONS[f.cat]||'📦'}</div><div class="fin-info"><div class="fin-name">${f.desc}</div><div class="fin-meta">${fmtDate(f.date)} · ${f.cat}</div></div><div class="fin-amount ${isIncome?'pos':'neg'}">${isIncome?'+':'-'}${fmtMoney(f.amount)}</div>`;
+      el.innerHTML=`<div class="fin-icon" style="background:${FIN_COLORS[f.cat]||'#e4e4de'}20">${FIN_ICONS[f.cat]||'📦'}</div><div class="fin-info"><div class="fin-name">${f.description}</div><div class="fin-meta">${fmtDate(f.date)} · ${f.cat}</div></div><div class="fin-amount ${isIncome?'pos':'neg'}">${isIncome?'+':'-'}${fmtMoney(f.amount)}</div>`;
       mvWrap.appendChild(el);
     });
   }
@@ -1900,7 +1900,7 @@ function openModal(id){
   if(id==='modal-mit')prefillMitModal();
   if(id==='modal-materia')buildColorGrid();
   if(id==='modal-entrega')buildEntregaMateriaSelect();
-  if(id==='modal-sprint'&&D.sprint){document.getElementById('sp-name').value=D.sprint.name||'';document.getElementById('sp-goal').value=D.sprint.goal||'';document.getElementById('sp-start').value=D.sprint.start||todayISO();document.getElementById('sp-end').value=D.sprint.end||todayISO();}
+  if(id==='modal-sprint'&&D.sprint){document.getElementById('sp-name').value=D.sprint.name||'';document.getElementById('sp-goal').value=D.sprint.goal||'';document.getElementById('sp-start').value=D.sprint.start_date||todayISO();document.getElementById('sp-end').value=D.sprint.end_date||todayISO();}
   if(id==='modal-perfil')buildPerfilModal();
   if(id==='modal-fin-tx'){document.getElementById('fin-type').value='gasto';updateFinModal();}
   document.getElementById(id).classList.add('open');
