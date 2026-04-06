@@ -1,0 +1,16 @@
+{
+  "name": "SP · Control Total",
+  "short_name": "SP Control",
+  "description": "Tu centro de control personal — hábitos, proyectos, universidad y finanzas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f8f6",
+  "theme_color": "#f8f8f6",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["productivity", "lifestyle"],
+  "lang": "es"
+}
