@@ -1,7 +1,7 @@
 {
   "name": "SP · Control Total",
   "short_name": "SP Control",
-  "description": "Tu centro de control personal — hábitos, proyectos, universidad y finanzas",
+  "description": "Tu centro de control personal",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8f8f6",
