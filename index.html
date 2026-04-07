@@ -1056,6 +1056,7 @@ async function handleAuth(){
   const pass=document.getElementById('auth-pass').value;
   const err=document.getElementById('auth-err');
   const btn=document.getElementById('auth-btn');
+  if(!sb){ err.textContent='Error de conexión. Recarga la página.'; return; }
   if(!email||!pass){ err.textContent='Completa todos los campos'; return; }
   btn.textContent='...'; btn.disabled=true;
   err.textContent='';
@@ -1081,7 +1082,7 @@ async function handleAuth(){
 }
 
 async function logout(){
-  await sb.auth.signOut();
+  if(sb) await sb.auth.signOut().catch(()=>{});
   currentUser=null; userProfile=null;
   D={habits:[],mits:['','',''],tasks:[],today:{date:todayStr(),habDone:{},habSkip:{},mitDone:[false,false,false]},activeMode:'normal',projects:[],sprint:null,materias:[],entregas:[],finanzas:[]};
   closeModal('modal-perfil');
@@ -1989,6 +1990,21 @@ if(sb){
   document.getElementById('loading-screen').style.display='none';
   document.getElementById('auth-screen').style.display='flex';
   document.getElementById('auth-err').textContent='Error: verifica tus claves de Supabase';
+}
+</script>
+
+<!-- Service Worker: registrar y forzar actualización -->
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    // Desregistrar SW viejos primero
+    regs.forEach(r=>r.unregister());
+  }).then(()=>{
+    // Registrar el nuevo con cache bust
+    navigator.serviceWorker.register('/sw.js?v=2').then(reg=>{
+      reg.update(); // Forzar check de nueva versión
+    });
+  });
 }
 </script>
 </body>
