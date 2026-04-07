@@ -1026,14 +1026,14 @@ try {
   document.getElementById('loading-screen').style.display='none';
   document.getElementById('auth-screen').style.display='flex';
 }
-// Fallback: si Supabase no responde en 5s, quitar loading
+// Fallback: si Supabase no responde en 10s, quitar loading
 setTimeout(()=>{
   const ls=document.getElementById('loading-screen');
-  if(ls && ls.style.display!=='none'){
+  if(ls && ls.style.display!=='none' && !_appLoaded){
     ls.style.display='none';
     document.getElementById('auth-screen').style.display='flex';
   }
-},5000);
+},10000);
 
 // ══════════════════════════════════════════
 // STATE LOCAL (caché para velocidad)
@@ -1999,38 +1999,66 @@ function toast(msg){const el=document.getElementById('toast');el.textContent=msg
 // ══════════════════════════════════════════
 // INIT — Auth listener
 // ══════════════════════════════════════════
+let _appLoaded = false;
+let _loadingData = false;
+
+function showAuth(){
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  document.getElementById('app-shell').style.display='none';
+}
+
+async function setupUser(user){
+  if(_loadingData) return; // prevent concurrent loads
+  _loadingData = true;
+  currentUser = user;
+  userProfile = {...user.user_metadata, email:user.email};
+  const initls = initials(userProfile.full_name||userProfile.email);
+  document.getElementById('user-avatar').textContent = initls;
+  document.getElementById('cierre-avatar').textContent = initls;
+  document.getElementById('user-name-hdr').innerHTML = `${userProfile.full_name||'Tú'} <i>hoy</i>`;
+  document.getElementById('loading-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'flex';
+  try {
+    await loadAllData();
+  } catch(e){
+    console.error('Load data error:', e);
+    // Retry once after 1 second
+    try { await new Promise(r=>setTimeout(r,1000)); await loadAllData(); }
+    catch(e2){ console.error('Retry also failed:', e2); }
+  }
+  buildWeek(); buildMits(); buildHabits(); buildTasks();
+  buildSprint(); buildProjects(); buildMaterias(); buildRadar();
+  buildFinanzas(); updateScore();
+  const ti = todayISO();
+  ['sp-start','sp-end','e-date','en-date'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=ti;});
+  _appLoaded = true;
+  _loadingData = false;
+}
+
 if(sb){
-  sb.auth.onAuthStateChange(async(event,session)=>{
-    try {
-      document.getElementById('loading-screen').style.display='none';
-      if(session?.user){
-        currentUser=session.user;
-        userProfile={...session.user.user_metadata,email:session.user.email};
-        const initls=initials(userProfile.full_name||userProfile.email);
-        document.getElementById('user-avatar').textContent=initls;
-        document.getElementById('cierre-avatar').textContent=initls;
-        document.getElementById('user-name-hdr').innerHTML=`${userProfile.full_name||'Tú'} <i>hoy</i>`;
-        document.getElementById('auth-screen').style.display='none';
-        document.getElementById('app-shell').style.display='flex';
-        await loadAllData();
-        buildWeek(); buildMits(); buildHabits(); buildTasks();
-        buildSprint(); buildProjects(); buildMaterias(); buildRadar();
-        buildFinanzas(); updateScore();
-        // Default dates
-        const ti=todayISO();
-        ['sp-start','sp-end','e-date','en-date'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=ti;});
-      } else {
-        document.getElementById('auth-screen').style.display='flex';
-        document.getElementById('app-shell').style.display='none';
-      }
-    } catch(e){
-      console.error('Auth state error:',e);
-      document.getElementById('loading-screen').style.display='none';
-      document.getElementById('auth-screen').style.display='flex';
+  // Primary: get session directly (most reliable on reload)
+  sb.auth.getSession().then(({data:{session}})=>{
+    if(session?.user){
+      setupUser(session.user);
+    } else {
+      showAuth();
+    }
+  }).catch(()=> showAuth());
+
+  // Secondary: listen for auth changes (login, logout, token refresh)
+  sb.auth.onAuthStateChange((event, session)=>{
+    if(event === 'SIGNED_IN' && !_appLoaded){
+      setupUser(session.user);
+    } else if(event === 'SIGNED_OUT'){
+      _appLoaded = false;
+      currentUser = null; userProfile = null;
+      D={habits:[],mits:['','',''],tasks:[],today:{date:todayStr(),habDone:{},habSkip:{},mitDone:[false,false,false]},activeMode:'normal',projects:[],sprint:null,materias:[],entregas:[],finanzas:[]};
+      showAuth();
     }
   });
 } else {
-  // Supabase no cargó — mostrar auth con error
   document.getElementById('loading-screen').style.display='none';
   document.getElementById('auth-screen').style.display='flex';
   document.getElementById('auth-err').textContent='Error: verifica tus claves de Supabase';
