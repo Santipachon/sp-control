@@ -1036,6 +1036,15 @@ function initials(name){ if(!name)return'?'; return name.split(' ').map(w=>w[0])
 function showSync(){ document.getElementById('sync-bar').classList.add('show'); document.getElementById('sync-fill').style.width='60%'; }
 function hideSync(){ document.getElementById('sync-fill').style.width='100%'; setTimeout(()=>{ document.getElementById('sync-bar').classList.remove('show'); document.getElementById('sync-fill').style.width='0'; },400); }
 
+// Helper: Supabase operation with timeout + error handling
+function dbSave(operation){
+  if(!sb||!currentUser) return;
+  const timeout = new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000));
+  Promise.race([operation(), timeout])
+    .then(res=>{ if(res?.error) console.error('DB error:',res.error); hideSync(); })
+    .catch(e=>{ console.error('DB save failed:',e); hideSync(); toast('⚠ Error al sincronizar — reintenta'); });
+}
+
 // ══════════════════════════════════════════
 // AUTH
 // ══════════════════════════════════════════
@@ -1129,13 +1138,12 @@ async function loadAllData(){
 }
 
 async function syncLog(){
-  if(!currentUser) return;
-  await sb.from('daily_logs').upsert({
+  dbSave(()=>sb.from('daily_logs').upsert({
     user_id:currentUser.id, date:todayISO(),
     hab_done:D.today.habDone, hab_skip:D.today.habSkip,
     mit_done:D.today.mitDone,
     score:calcScore().score
-  },{onConflict:'user_id,date'});
+  },{onConflict:'user_id,date'}));
 }
 
 // ══════════════════════════════════════════
@@ -1301,14 +1309,12 @@ async function saveHabit(){
     ctx:_ctxVal,ctx_name:document.getElementById('h-ctx-custom').value.trim(),
     streak:0,history:[0,0,0,0,0,0,0],created_at:new Date().toISOString()
   };
-  showSync();
-  const{error}=await sb.from('habits').insert(habit);
-  hideSync();
-  if(error){toast('Error al guardar');return;}
   D.habits.push(habit);
   buildHabits(); closeModal('modal-add-hab');
   document.getElementById('h-name').value='';document.getElementById('h-icon').value='';
   toast('Hábito agregado ✓');
+  showSync();
+  dbSave(()=>sb.from('habits').insert(habit));
 }
 
 // ══════════════════════════════════════════
@@ -1351,9 +1357,11 @@ async function saveMits(){
   D.mits[1]=document.getElementById('m-mit2').value.trim();
   D.mits[2]=document.getElementById('m-mit3').value.trim();
   D.today.mitDone=[false,false,false];
+  // UI primero — respuesta instantánea
+  buildMits(); closeModal('modal-mit'); toast('Prioridades guardadas ✓');
+  // Sync en segundo plano
   showSync();
-  await sb.from('mits').upsert({user_id:currentUser.id,date:todayISO(),mit1:D.mits[0],mit2:D.mits[1],mit3:D.mits[2]},{onConflict:'user_id,date'});
-  hideSync(); buildMits(); closeModal('modal-mit'); toast('Prioridades guardadas ✓');
+  dbSave(()=>sb.from('mits').upsert({user_id:currentUser.id,date:todayISO(),mit1:D.mits[0],mit2:D.mits[1],mit3:D.mits[2]},{onConflict:'user_id,date'}));
 }
 
 // ══════════════════════════════════════════
@@ -1374,14 +1382,13 @@ async function addTask(){
   const inp=document.getElementById('task-in'),v=inp.value.trim(); if(!v)return;
   const task={id:uid(),user_id:currentUser.id,text:v,done:false,date:todayISO(),created_at:new Date().toISOString()};
   inp.value='';
-  D.tasks.unshift(task); buildTasks();
-  await sb.from('tasks').insert(task);
-  toast('Tarea agregada');
+  D.tasks.unshift(task); buildTasks(); toast('Tarea agregada');
+  dbSave(()=>sb.from('tasks').insert(task));
 }
 
 async function toggleTask(i){
   D.tasks[i].done=!D.tasks[i].done; buildTasks();
-  await sb.from('tasks').update({done:D.tasks[i].done}).eq('id',D.tasks[i].id);
+  dbSave(()=>sb.from('tasks').update({done:D.tasks[i].done}).eq('id',D.tasks[i].id));
 }
 
 // ══════════════════════════════════════════
@@ -1415,13 +1422,13 @@ async function saveCierre(){
   const m1=document.getElementById('mit-m1').value.trim();
   if(!m1){toast('Escribe al menos la prioridad 1');return;}
   const journal=document.getElementById('journal-txt').value;
+  toast('¡Día cerrado! Mañana arrancas con todo 🌙');
+  setTimeout(()=>goPage('hoy',document.querySelector('.nb')),1500);
   showSync();
-  await Promise.all([
+  dbSave(()=>Promise.all([
     sb.from('mits').upsert({user_id:currentUser.id,date:new Date(Date.now()+86400000).toISOString().split('T')[0],mit1:m1,mit2:document.getElementById('mit-m2').value.trim(),mit3:document.getElementById('mit-m3').value.trim()},{onConflict:'user_id,date'}),
     sb.from('daily_logs').upsert({user_id:currentUser.id,date:todayISO(),journal,score:calcScore().score,hab_done:D.today.habDone,hab_skip:D.today.habSkip,mit_done:D.today.mitDone},{onConflict:'user_id,date'})
-  ]);
-  hideSync(); toast('¡Día cerrado! Mañana arrancas con todo 🌙');
-  setTimeout(()=>goPage('hoy',document.querySelector('.nb')),1500);
+  ]));
 }
 
 // ══════════════════════════════════════════
@@ -1480,13 +1487,13 @@ async function toggleGoal(i){
   const p=D.projects.find(x=>x.id===_activeProjId); if(!p)return;
   p.goals[i].done=!p.goals[i].done;
   buildGoals(p);
-  await sb.from('projects').update({goals:p.goals}).eq('id',p.id);
+  dbSave(()=>sb.from('projects').update({goals:p.goals}).eq('id',p.id));
 }
 
 async function deleteGoal(i){
   const p=D.projects.find(x=>x.id===_activeProjId); if(!p)return;
   p.goals.splice(i,1); buildGoals(p);
-  await sb.from('projects').update({goals:p.goals}).eq('id',p.id);
+  dbSave(()=>sb.from('projects').update({goals:p.goals}).eq('id',p.id));
 }
 
 async function saveGoal(){
@@ -1494,8 +1501,8 @@ async function saveGoal(){
   const p=D.projects.find(x=>x.id===_activeProjId); if(!p)return;
   if(!p.goals)p.goals=[];
   p.goals.push({text,scope:document.getElementById('g-scope').value,done:false});
-  await sb.from('projects').update({goals:p.goals}).eq('id',p.id);
   document.getElementById('g-text').value=''; buildGoals(p); closeModal('modal-goal'); toast('Meta agregada ✓');
+  dbSave(()=>sb.from('projects').update({goals:p.goals}).eq('id',p.id));
 }
 
 function buildKanban(p){
@@ -1516,8 +1523,8 @@ async function cycleTask(idx){
   const t=p.tasks[idx]; if(!t)return;
   t.status={todo:'doing',doing:'done',done:'todo'}[t.status]||'todo';
   buildKanban(p); buildProjects();
-  await sb.from('projects').update({tasks:p.tasks}).eq('id',p.id);
   toast(`→ ${t.status==='doing'?'En progreso':t.status==='done'?'Listo':'Por hacer'}`);
+  dbSave(()=>sb.from('projects').update({tasks:p.tasks}).eq('id',p.id));
 }
 
 async function saveKTask(){
@@ -1525,8 +1532,8 @@ async function saveKTask(){
   const p=D.projects.find(x=>x.id===_activeProjId); if(!p)return;
   if(!p.tasks)p.tasks=[];
   p.tasks.push({id:uid(),text,status:document.getElementById('kt-status').value});
-  await sb.from('projects').update({tasks:p.tasks}).eq('id',p.id);
   document.getElementById('kt-text').value=''; buildKanban(p); buildProjects(); closeModal('modal-ktask'); toast('Tarea agregada ✓');
+  dbSave(()=>sb.from('projects').update({tasks:p.tasks}).eq('id',p.id));
 }
 
 async function saveProj(){
@@ -1542,12 +1549,13 @@ async function saveProj(){
     goals:isEdit?D.projects.find(p=>p.id===_editProjId)?.goals||[]:[],
     created_at:new Date().toISOString()
   };
-  showSync();
-  if(isEdit){ await sb.from('projects').update(proj).eq('id',proj.id); const i=D.projects.findIndex(p=>p.id===_editProjId); if(i>=0)D.projects[i]=proj; }
-  else{ await sb.from('projects').insert(proj); D.projects.unshift(proj); }
-  hideSync(); _editProjId=null;
+  if(isEdit){ const i=D.projects.findIndex(p=>p.id===_editProjId); if(i>=0)D.projects[i]=proj; }
+  else{ D.projects.unshift(proj); }
+  _editProjId=null;
   ['p-name','p-desc','p-stack','p-next'].forEach(id=>document.getElementById(id).value='');
   buildProjects(); closeModal('modal-proj'); toast(isEdit?'Proyecto actualizado':'Proyecto creado ✓');
+  showSync();
+  dbSave(()=>isEdit?sb.from('projects').update(proj).eq('id',proj.id):sb.from('projects').insert(proj));
 }
 
 function editActiveProj(){
@@ -1585,10 +1593,9 @@ function buildSprint(){
 async function saveSprint(){
   const name=document.getElementById('sp-name').value.trim(); if(!name){toast('Escribe el nombre del sprint');return;}
   const sp={id:D.sprint?.id||uid(),user_id:currentUser.id,name,goal:document.getElementById('sp-goal').value.trim(),start_date:document.getElementById('sp-start').value||todayISO(),end_date:document.getElementById('sp-end').value||todayISO()};
+  D.sprint=sp; buildSprint(); closeModal('modal-sprint'); toast('Sprint guardado ✓');
   showSync();
-  if(D.sprint){ await sb.from('sprints').update(sp).eq('id',sp.id); }
-  else{ await sb.from('sprints').insert(sp); }
-  D.sprint=sp; hideSync(); buildSprint(); closeModal('modal-sprint'); toast('Sprint guardado ✓');
+  dbSave(()=>D.sprint?.id===sp.id?sb.from('sprints').update(sp).eq('id',sp.id):sb.from('sprints').insert(sp));
 }
 
 // ══════════════════════════════════════════
@@ -1663,13 +1670,13 @@ async function updateEvalNota(i,val){
   const mat=D.materias.find(m=>m.id===_activeMateriaId); if(!mat)return;
   mat.evals[i].nota=val===''?null:parseFloat(val);
   buildEvals(mat); buildMaterias(); openMateriaDetail(mat.id);
-  await sb.from('materias').update({evals:mat.evals}).eq('id',mat.id);
+  dbSave(()=>sb.from('materias').update({evals:mat.evals}).eq('id',mat.id));
 }
 
 async function deleteEval(i){
   const mat=D.materias.find(m=>m.id===_activeMateriaId); if(!mat)return;
   mat.evals.splice(i,1); buildEvals(mat); buildMaterias();
-  await sb.from('materias').update({evals:mat.evals}).eq('id',mat.id);
+  dbSave(()=>sb.from('materias').update({evals:mat.evals}).eq('id',mat.id));
 }
 
 async function saveEval(){
@@ -1679,9 +1686,9 @@ async function saveEval(){
   if(!mat.evals)mat.evals=[];
   const notaVal=document.getElementById('e-nota').value;
   mat.evals.push({id:uid(),name,weight:parseFloat(weight),date:document.getElementById('e-date').value||null,nota:notaVal===''?null:parseFloat(notaVal)});
-  await sb.from('materias').update({evals:mat.evals}).eq('id',mat.id);
   ['e-name','e-weight','e-date','e-nota'].forEach(id=>document.getElementById(id).value='');
   buildEvals(mat); buildMaterias(); closeModal('modal-eval'); toast('Evaluación agregada ✓');
+  dbSave(()=>sb.from('materias').update({evals:mat.evals}).eq('id',mat.id));
 }
 
 async function saveMateria(){
@@ -1694,12 +1701,13 @@ async function saveMateria(){
     evals:isEdit?D.materias.find(m=>m.id===_editMateriaId)?.evals||[]:[],
     created_at:new Date().toISOString()
   };
-  showSync();
-  if(isEdit){ await sb.from('materias').update(mat).eq('id',mat.id); const i=D.materias.findIndex(m=>m.id===_editMateriaId); if(i>=0)D.materias[i]=mat; }
-  else{ await sb.from('materias').insert(mat); D.materias.push(mat); }
-  _editMateriaId=null; hideSync();
+  if(isEdit){ const i=D.materias.findIndex(m=>m.id===_editMateriaId); if(i>=0)D.materias[i]=mat; }
+  else{ D.materias.push(mat); }
+  _editMateriaId=null;
   ['m-name','m-min','m-credits'].forEach(id=>document.getElementById(id).value='');
   buildMaterias(); closeModal('modal-materia'); toast(isEdit?'Materia actualizada':'Materia agregada ✓');
+  showSync();
+  dbSave(()=>isEdit?sb.from('materias').update(mat).eq('id',mat.id):sb.from('materias').insert(mat));
 }
 
 function editActiveMateria(){
@@ -1737,11 +1745,11 @@ async function saveEntrega(){
   const name=document.getElementById('en-name').value.trim(),date=document.getElementById('en-date').value;
   if(!name||!date){toast('Completa nombre y fecha');return;}
   const entrega={id:uid(),user_id:currentUser.id,name,materia_id:document.getElementById('en-materia').value,date,weight:parseFloat(document.getElementById('en-weight').value)||0,done:false,created_at:new Date().toISOString()};
-  showSync(); await sb.from('entregas').insert(entrega);
-  D.entregas.push(entrega); hideSync();
+  D.entregas.push(entrega);
   ['en-name','en-date','en-weight'].forEach(id=>document.getElementById(id).value='');
   buildRadar(); if(_activeMateriaId){const m=D.materias.find(x=>x.id===_activeMateriaId);if(m)buildMateriaEntregas(m);}
   closeModal('modal-entrega'); toast('Entrega registrada ✓');
+  showSync(); dbSave(()=>sb.from('entregas').insert(entrega));
 }
 
 function buildRadar(){
@@ -1768,8 +1776,8 @@ function buildRadar(){
 
 async function markEntregaDone(id){
   const e=D.entregas.find(x=>x.id===id); if(!e)return;
-  e.done=true; await sb.from('entregas').update({done:true}).eq('id',id);
-  buildRadar(); toast('Entrega marcada como lista ✓');
+  e.done=true; buildRadar(); toast('Entrega marcada como lista ✓');
+  dbSave(()=>sb.from('entregas').update({done:true}).eq('id',id));
 }
 
 // ══════════════════════════════════════════
@@ -1804,16 +1812,16 @@ async function saveFin(){
     due:document.getElementById('fin-due').value||null,
     done:false,date:todayISO(),created_at:new Date().toISOString()
   };
-  showSync(); await sb.from('finanzas').insert(tx);
-  D.finanzas.unshift(tx); hideSync();
+  D.finanzas.unshift(tx);
   ['fin-desc','fin-amount','fin-persona','fin-due'].forEach(id=>document.getElementById(id).value='');
   buildFinanzas(); closeModal('modal-fin-tx'); toast('Registro guardado ✓');
+  showSync(); dbSave(()=>sb.from('finanzas').insert(tx));
 }
 
 async function markFinDone(id){
   const f=D.finanzas.find(x=>x.id===id); if(!f)return;
-  f.done=true; await sb.from('finanzas').update({done:true}).eq('id',id);
-  buildFinanzas(); toast('Marcado como saldado ✓');
+  f.done=true; buildFinanzas(); toast('Marcado como saldado ✓');
+  dbSave(()=>sb.from('finanzas').update({done:true}).eq('id',id));
 }
 
 function buildFinanzas(){
@@ -1886,13 +1894,14 @@ async function saveFab(){
   const v=document.getElementById('fab-input').value.trim(); if(!v){toast('Escribe algo primero');return;}
   if(_fabType==='tarea'){
     const task={id:uid(),user_id:currentUser.id,text:v,done:false,date:todayISO(),created_at:new Date().toISOString()};
-    D.tasks.unshift(task); buildTasks(); await sb.from('tasks').insert(task);
+    D.tasks.unshift(task); buildTasks(); dbSave(()=>sb.from('tasks').insert(task));
   } else if(_fabType==='mit'){
-    const idx=D.mits.findIndex(m=>!m.trim()); if(idx>=0){D.mits[idx]=v; buildMits(); await sb.from('mits').upsert({user_id:currentUser.id,date:todayISO(),mit1:D.mits[0],mit2:D.mits[1],mit3:D.mits[2]},{onConflict:'user_id,date'});}
+    const idx=D.mits.findIndex(m=>!m.trim()); if(idx>=0){D.mits[idx]=v; buildMits(); dbSave(()=>sb.from('mits').upsert({user_id:currentUser.id,date:todayISO(),mit1:D.mits[0],mit2:D.mits[1],mit3:D.mits[2]},{onConflict:'user_id,date'}));}
     else toast('Ya tienes 3 prioridades definidas');
   } else if(_fabType==='gasto'){
     const tx={id:uid(),user_id:currentUser.id,type:'gasto',description:v,amount:0,cat:'otro',done:false,date:todayISO(),created_at:new Date().toISOString()};
-    D.finanzas.unshift(tx); await sb.from('finanzas').insert(tx); buildFinanzas(); toast('Gasto capturado — agrega el monto en Finanzas');
+    D.finanzas.unshift(tx); buildFinanzas(); toast('Gasto capturado — agrega el monto en Finanzas');
+    dbSave(()=>sb.from('finanzas').insert(tx));
     document.getElementById('fab-input').value=''; closeModal('modal-fab'); return;
   }
   document.getElementById('fab-input').value='';
