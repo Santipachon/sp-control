@@ -7,21 +7,27 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="SP · Control">
-<link rel="manifest" href="manifest.json">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>SP · Control Total</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<!-- Kill old service workers FIRST -->
+<!-- Kill ALL service workers and caches aggressively -->
 <script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    for(var i=0;i<regs.length;i++){regs[i].unregister();}
-  });
+(function(){
+  // Unregister every SW
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.getRegistrations().then(function(regs){
+      for(var i=0;i<regs.length;i++){regs[i].unregister();}
+    });
+  }
+  // Nuke every cache
   if('caches' in window){
     caches.keys().then(function(names){
       for(var i=0;i<names.length;i++){caches.delete(names[i]);}
     });
   }
-}
+})();
 </script>
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1010,8 +1016,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 // ══════════════════════════════════════════
 // SUPABASE CONFIG — reemplaza con tus claves
 // ══════════════════════════════════════════
-const SUPABASE_URL = 'https://ffsyrjmidambnimuphdg.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmc3lyam1pZGFtYm5pbXVwaGRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTI5MjcsImV4cCI6MjA5MTA4ODkyN30.6aN_EBWbfhIxAUlp1w5M8fmoYmfOnJb6qFgx8jwvyVI';
+const SUPABASE_URL = 'REEMPLAZA_CON_TU_SUPABASE_URL';
+const SUPABASE_KEY = 'REEMPLAZA_CON_TU_SUPABASE_ANON_KEY';
 let sb;
 try {
   sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1051,7 +1057,7 @@ const COLORS=['#d9534f','#d4a017','#4a9e72','#3a50b0','#8b5cf6','#e8693a','#0891
 // UTILS
 // ══════════════════════════════════════════
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+function todayStr(){ return todayISO(); }
 function todayISO(){ return new Date().toISOString().split('T')[0]; }
 function daysBetween(a){ return Math.round((new Date(a+'T12:00:00')-new Date())/(1000*60*60*24)); }
 function fmtDate(s){ if(!s)return'—'; const d=new Date(s+'T12:00:00'); const M=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic']; return`${d.getDate()} ${M[d.getMonth()]}`; }
@@ -1202,7 +1208,7 @@ function buildWeek(){
     const col=document.createElement('div'); col.className='wday';
     let cls='miss', inner=String(d.getDate());
     if(diff===0){cls='today';inner='·';}
-    else if(diff<0){cls=Math.random()>.4?'full':'partial';inner=diff===-1?'✓':String(d.getDate());}
+    else if(diff>0){cls='miss';inner=String(d.getDate());}
     col.innerHTML=`<div class="wday-l">${l}</div><div class="wday-d ${cls}">${inner}</div>`;
     wrap.appendChild(col);
   });
