@@ -10,6 +10,19 @@
 <link rel="manifest" href="manifest.json">
 <title>SP · Control Total</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Kill old service workers FIRST -->
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    for(var i=0;i<regs.length;i++){regs[i].unregister();}
+  });
+  if('caches' in window){
+    caches.keys().then(function(names){
+      for(var i=0;i<names.length;i++){caches.delete(names[i]);}
+    });
+  }
+}
+</script>
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -331,7 +344,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .motiv b{font-weight:500}
 
 /* ── BOTTOM NAV ── */
-.bnav{flex-shrink:0;background:rgba(248,248,246,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:14px 12px calc(var(--safe-b)+14px);display:flex;justify-content:space-around;align-items:flex-end;z-index:10}
+.bnav{flex-shrink:0;background:rgba(248,248,246,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:14px 20px calc(var(--safe-b)+14px);display:flex;justify-content:space-around;align-items:flex-end;z-index:10}
 .nb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--sub2);transition:color .15s;font-family:'DM Sans',sans-serif;min-width:56px}
 .nb.active{color:var(--text)}
 .nb-ico{font-size:20px;line-height:1}
@@ -364,6 +377,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .loading-logo i{font-style:italic;color:var(--sub)}
 .loading-dot{width:6px;height:6px;border-radius:50%;background:var(--text);animation:blink 1.2s infinite}
 @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* ── SAFE MARGINS FOR ALL SCREENS ── */
+@media(max-width:430px){
+  .hdr{padding-left:24px!important;padding-right:24px!important}
+  .sec{padding-left:24px!important;padding-right:24px!important}
+  .score-strip{margin-left:20px!important;margin-right:20px!important}
+  .balance-strip{margin-left:20px!important;margin-right:20px!important}
+  .hdr-date{padding-left:24px!important;padding-right:24px!important}
+  .motiv{margin-left:20px!important;margin-right:20px!important}
+  .page-hdr{padding-left:24px!important;padding-right:24px!important}
+  .detail-hdr{padding-left:20px!important;padding-right:20px!important}
+  .detail-sec{padding-left:20px!important;padding-right:20px!important}
+  .modal{padding-left:24px!important;padding-right:24px!important}
+  .divider{margin-left:24px!important;margin-right:24px!important}
+  .evening-card{padding-left:18px!important;padding-right:18px!important}
+}
 </style>
 </head>
 <body>
@@ -1999,21 +2028,6 @@ if(sb){
   document.getElementById('loading-screen').style.display='none';
   document.getElementById('auth-screen').style.display='flex';
   document.getElementById('auth-err').textContent='Error: verifica tus claves de Supabase';
-}
-</script>
-
-<!-- Service Worker: registrar y forzar actualización -->
-<script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(regs=>{
-    // Desregistrar SW viejos primero
-    regs.forEach(r=>r.unregister());
-  }).then(()=>{
-    // Registrar el nuevo con cache bust
-    navigator.serviceWorker.register('/sw.js?v=2').then(reg=>{
-      reg.update(); // Forzar check de nueva versión
-    });
-  });
 }
 </script>
 </body>
