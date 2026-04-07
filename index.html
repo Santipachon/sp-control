@@ -375,6 +375,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .loading-logo i{font-style:italic;color:var(--sub)}
 .loading-dot{width:6px;height:6px;border-radius:50%;background:var(--text);animation:blink 1.2s infinite}
 @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+
+/* ── MÁRGENES GLOBALES ── */
+.hdr { padding-left: 28px !important; padding-right: 28px !important; }
+.hdr-date { padding-left: 28px !important; padding-right: 28px !important; }
+.sec { padding-left: 28px !important; padding-right: 28px !important; }
+.score-strip { margin-left: 28px !important; margin-right: 28px !important; }
+.balance-strip { margin-left: 28px !important; margin-right: 28px !important; }
+.motiv { margin-left: 28px !important; margin-right: 28px !important; }
+.page-hdr { padding-left: 28px !important; padding-right: 28px !important; }
 </style>
 </head>
 <body>
@@ -481,7 +490,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <div id="task-list"></div>
     <div class="add-row">
       <input id="task-in" placeholder="Agregar tarea..." onkeypress="if(event.key==='Enter')addTask()">
-      <button class="add-btn" onclick="addTask()">Agregar</button>
+      <button class="add-btn" id="btn-add-task">Agregar</button>
     </div>
   </div>
 </div>
@@ -538,7 +547,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
       <input class="mit-plan-input" id="mit-m1" placeholder="Prioridad 1...">
       <input class="mit-plan-input" id="mit-m2" placeholder="Prioridad 2...">
       <input class="mit-plan-input" id="mit-m3" placeholder="Prioridad 3 (opcional)...">
-      <button class="save-btn" onclick="saveCierre()">Guardar y cerrar el día ✓</button>
+      <button class="save-btn" id="btn-save-cierre">Guardar y cerrar el día ✓</button>
     </div>
   </div>
 </div>
@@ -759,8 +768,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <div style="height:1px;background:var(--border);margin-bottom:14px"></div>
     <div style="font-size:12px;color:var(--sub);margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;font-weight:500">Modo activo</div>
     <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px" id="modo-btns-modal"></div>
-    <button class="modal-save" style="background:var(--r-bg);color:var(--r)" onclick="logout()">Cerrar sesión</button>
-    <button class="modal-cancel" onclick="closeModal('modal-perfil')">Cerrar</button>
+    <button class="modal-save" id="btn-logout" style="background:var(--r-bg);color:var(--r)">Cerrar sesión</button>
+    <button class="modal-cancel" id="btn-cancel-perfil">Cerrar</button>
   </div>
 </div>
 
@@ -779,8 +788,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
       <input class="field-input" id="fab-input" placeholder="¿Qué capturas?" onkeypress="if(event.key==='Enter')saveFab()">
       <div style="font-size:11px;color:var(--sub2);margin-top:6px;text-align:center" id="fab-type-label">Selecciona el tipo arriba</div>
     </div>
-    <button class="modal-save" onclick="saveFab()">Guardar</button>
-    <button class="modal-cancel" onclick="closeModal('modal-fab')">Cancelar</button>
+    <button class="modal-save" id="btn-save-fab">Guardar</button>
+    <button class="modal-cancel" id="btn-cancel-fab">Cancelar</button>
   </div>
 </div>
 
@@ -796,8 +805,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="m-mit2" placeholder="Segunda prioridad...">
     <label class="field-label">Prioridad 3</label>
     <input class="field-input" id="m-mit3" placeholder="Tercera prioridad...">
-    <button class="modal-save" onclick="saveMits()">Guardar prioridades</button>
-    <button class="modal-cancel" onclick="closeModal('modal-mit')">Cancelar</button>
+    <button class="modal-save" id="btn-save-mits">Guardar prioridades</button>
+    <button class="modal-cancel" id="btn-cancel-mits">Cancelar</button>
   </div>
 </div>
 
@@ -821,8 +830,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
       <label class="field-label">Nombre del modo</label>
       <input class="field-input" id="h-ctx-custom" placeholder="Ej: Semana de parciales">
     </div>
-    <button class="modal-save" onclick="saveHabit()">Agregar hábito</button>
-    <button class="modal-cancel" onclick="closeModal('modal-add-hab')">Cancelar</button>
+    <button class="modal-save" id="btn-save-hab">Agregar hábito</button>
+    <button class="modal-cancel" id="btn-cancel-hab">Cancelar</button>
   </div>
 </div>
 
@@ -841,8 +850,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="p-stack" placeholder="Ej: React, Node, Supabase">
     <label class="field-label">Próximo paso concreto</label>
     <input class="field-input" id="p-next" placeholder="¿Qué hay que hacer ahora mismo?">
-    <button class="modal-save" onclick="saveProj()">Guardar proyecto</button>
-    <button class="modal-cancel" onclick="closeModal('modal-proj')">Cancelar</button>
+    <button class="modal-save" id="btn-save-proj">Guardar proyecto</button>
+    <button class="modal-cancel" id="btn-cancel-proj">Cancelar</button>
   </div>
 </div>
 
@@ -859,8 +868,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="sp-start" type="date">
     <label class="field-label">Fecha fin</label>
     <input class="field-input" id="sp-end" type="date">
-    <button class="modal-save" onclick="saveSprint()">Guardar sprint</button>
-    <button class="modal-cancel" onclick="closeModal('modal-sprint')">Cancelar</button>
+    <button class="modal-save" id="btn-save-sprint">Guardar sprint</button>
+    <button class="modal-cancel" id="btn-cancel-sprint">Cancelar</button>
   </div>
 </div>
 
@@ -873,8 +882,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="g-text" placeholder="Ej: Lanzar MVP, Implementar auth...">
     <label class="field-label">Alcance</label>
     <select class="field-select" id="g-scope"><option value="sprint">Esta semana</option><option value="month">Este mes</option><option value="project">Objetivo del proyecto</option></select>
-    <button class="modal-save" onclick="saveGoal()">Agregar meta</button>
-    <button class="modal-cancel" onclick="closeModal('modal-goal')">Cancelar</button>
+    <button class="modal-save" id="btn-save-goal">Agregar meta</button>
+    <button class="modal-cancel" id="btn-cancel-goal">Cancelar</button>
   </div>
 </div>
 
@@ -887,8 +896,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="kt-text" placeholder="Ej: Conectar API, Diseñar modal...">
     <label class="field-label">Estado inicial</label>
     <select class="field-select" id="kt-status"><option value="todo">Por hacer</option><option value="doing">En progreso</option><option value="done">Listo</option></select>
-    <button class="modal-save" onclick="saveKTask()">Agregar tarea</button>
-    <button class="modal-cancel" onclick="closeModal('modal-ktask')">Cancelar</button>
+    <button class="modal-save" id="btn-save-ktask">Agregar tarea</button>
+    <button class="modal-cancel" id="btn-cancel-ktask">Cancelar</button>
   </div>
 </div>
 
@@ -905,8 +914,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <div class="color-grid" id="color-grid"></div>
     <label class="field-label">Créditos</label>
     <input class="field-input" id="m-credits" type="number" placeholder="3" min="1" max="6">
-    <button class="modal-save" onclick="saveMateria()">Guardar materia</button>
-    <button class="modal-cancel" onclick="closeModal('modal-materia')">Cancelar</button>
+    <button class="modal-save" id="btn-save-materia">Guardar materia</button>
+    <button class="modal-cancel" id="btn-cancel-materia">Cancelar</button>
   </div>
 </div>
 
@@ -923,8 +932,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="e-date" type="date">
     <label class="field-label">Nota obtenida (vacío si aún no hay)</label>
     <input class="field-input" id="e-nota" type="number" placeholder="—" step="0.1" min="0" max="5">
-    <button class="modal-save" onclick="saveEval()">Guardar evaluación</button>
-    <button class="modal-cancel" onclick="closeModal('modal-eval')">Cancelar</button>
+    <button class="modal-save" id="btn-save-eval">Guardar evaluación</button>
+    <button class="modal-cancel" id="btn-cancel-eval">Cancelar</button>
   </div>
 </div>
 
@@ -941,8 +950,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="en-date" type="date">
     <label class="field-label">Peso en nota (%)</label>
     <input class="field-input" id="en-weight" type="number" placeholder="15" min="0" max="100">
-    <button class="modal-save" onclick="saveEntrega()">Guardar entrega</button>
-    <button class="modal-cancel" onclick="closeModal('modal-entrega')">Cancelar</button>
+    <button class="modal-save" id="btn-save-entrega">Guardar entrega</button>
+    <button class="modal-cancel" id="btn-cancel-entrega">Cancelar</button>
   </div>
 </div>
 
@@ -978,8 +987,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
       <label class="field-label">Fecha límite (opcional)</label>
       <input class="field-input" id="fin-due" type="date">
     </div>
-    <button class="modal-save" onclick="saveFin()">Guardar</button>
-    <button class="modal-cancel" onclick="closeModal('modal-fin-tx')">Cancelar</button>
+    <button class="modal-save" id="btn-save-fin">Guardar</button>
+    <button class="modal-cancel" id="btn-cancel-fin">Cancelar</button>
   </div>
 </div>
 
@@ -2047,6 +2056,52 @@ sb.auth.onAuthStateChange(async(event,session)=>{
     }
   }, {passive:false});
 })();
+
+// ══════════════════════════════════════════
+// BUTTON LISTENERS — iOS safe, no onclick
+// ══════════════════════════════════════════
+function bindBtn(id, fn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  ['click','touchend'].forEach(evt => {
+    el.addEventListener(evt, function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      fn();
+    }, { passive: false });
+  });
+}
+
+function initButtons() {
+  bindBtn('btn-save-mits',    saveMits);
+  bindBtn('btn-cancel-mits',  () => closeModal('modal-mit'));
+  bindBtn('btn-save-hab',     saveHabit);
+  bindBtn('btn-cancel-hab',   () => closeModal('modal-add-hab'));
+  bindBtn('btn-save-proj',    saveProj);
+  bindBtn('btn-cancel-proj',  () => closeModal('modal-proj'));
+  bindBtn('btn-save-sprint',  saveSprint);
+  bindBtn('btn-cancel-sprint',() => closeModal('modal-sprint'));
+  bindBtn('btn-save-goal',    saveGoal);
+  bindBtn('btn-cancel-goal',  () => closeModal('modal-goal'));
+  bindBtn('btn-save-ktask',   saveKTask);
+  bindBtn('btn-cancel-ktask', () => closeModal('modal-ktask'));
+  bindBtn('btn-save-materia', saveMateria);
+  bindBtn('btn-cancel-materia',() => closeModal('modal-materia'));
+  bindBtn('btn-save-eval',    saveEval);
+  bindBtn('btn-cancel-eval',  () => closeModal('modal-eval'));
+  bindBtn('btn-save-entrega', saveEntrega);
+  bindBtn('btn-cancel-entrega',() => closeModal('modal-entrega'));
+  bindBtn('btn-save-fin',     saveFin);
+  bindBtn('btn-cancel-fin',   () => closeModal('modal-fin-tx'));
+  bindBtn('btn-save-fab',     saveFab);
+  bindBtn('btn-cancel-fab',   () => closeModal('modal-fab'));
+  bindBtn('btn-logout',       logout);
+  bindBtn('btn-cancel-perfil',() => closeModal('modal-perfil'));
+  bindBtn('btn-save-cierre',  saveCierre);
+  bindBtn('btn-add-task',     addTask);
+}
+
+document.addEventListener('DOMContentLoaded', initButtons);
 </script>
 </body>
 </html>
