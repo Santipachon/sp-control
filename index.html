@@ -10,18 +10,9 @@
 <link rel="manifest" href="manifest.json">
 <title>SP · Control Total</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-
-<script>
-// iOS Safari fix — ejecuta antes que todo
-document.addEventListener('touchstart', function(){}, {passive:true});
-</script>
 <!-- Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-/* iOS tap fix global */
-* { touch-action: manipulation; }
-input, textarea, select { touch-action: auto; }
-
 :root {
   --bg:#f8f8f6; --white:#fff; --s2:#f0f0ec; --s3:#e8e8e4;
   --border:#e4e4de; --border2:#d0d0c8;
@@ -31,11 +22,8 @@ input, textarea, select { touch-action: auto; }
   --g:#236644; --g-bg:#edf5f1;
   --safe-t:env(safe-area-inset-top,0px);
   --safe-b:env(safe-area-inset-bottom,0px);
-  --px:32px;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-/* Margen mínimo global para que nada toque los bordes */
-.hdr,.sec,.score-strip,.balance-strip,.motiv{padding-left:max(24px,env(safe-area-inset-left,0px) + 24px);padding-right:max(24px,env(safe-area-inset-right,0px) + 24px);}
 html,body{height:100%}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;display:flex;flex-direction:column;height:100%;overflow:hidden}
 
@@ -55,10 +43,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .auth-input{width:100%;background:var(--s2);border:none;border-radius:10px;padding:12px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:background .2s}
 .auth-input:focus{background:var(--white);border:1px solid var(--border);padding:11px 13px}
 .auth-input::placeholder{color:var(--sub2)}
-.auth-btn{width:100%;background:var(--text);color:var(--white);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:18px;transition:opacity .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.auth-btn{width:100%;background:var(--text);color:var(--white);border:none;border-radius:12px;padding:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;margin-top:18px;transition:opacity .15s}
 .auth-btn:active{opacity:.7}
 .auth-err{font-size:12px;color:var(--r);margin-top:10px;text-align:center;min-height:18px}
-.auth-toggle{font-size:12px;color:var(--sub);text-align:center;margin-top:14px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.auth-toggle{font-size:12px;color:var(--sub);text-align:center;margin-top:14px;cursor:pointer}
 .auth-toggle span{color:var(--text);font-weight:500;text-decoration:underline}
 
 /* ── APP SHELL ── */
@@ -74,17 +62,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── HEADER ── */
-.hdr{padding:calc(var(--safe-t)+36px) var(--px) 0}
+.hdr{padding:calc(var(--safe-t)+32px) 28px 0}
 .hdr-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .hdr-left{flex:1;min-width:0;padding-right:16px}
 .pg-greeting{font-size:11px;color:var(--sub);letter-spacing:.4px;margin-bottom:5px;font-weight:300}
 .pg-title{font-family:'Lora',serif;font-size:26px;font-weight:400;letter-spacing:-.4px;line-height:1.15}
 .pg-title i{font-style:italic}
 .user-avatar{width:42px;height:42px;border-radius:50%;background:var(--text);color:var(--white);display:flex;align-items:center;justify-content:center;font-family:'Lora',serif;font-size:16px;cursor:pointer;flex-shrink:0;box-shadow:0 2px 8px rgba(24,24,20,.15)}
-.hdr-date{font-size:12px;color:var(--sub);margin-bottom:26px;font-weight:300;padding:0 24px}
+.hdr-date{font-size:12px;color:var(--sub);margin-bottom:26px;font-weight:300;padding:0 28px}
 
 /* ── SCORE STRIP ── */
-.score-strip{margin:0 var(--px) 28px;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px}
+.score-strip{margin:0 28px 26px;background:var(--white);border:1px solid var(--border);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px}
 .score-ring{position:relative;width:60px;height:60px;flex-shrink:0}
 .score-ring svg{transform:rotate(-90deg)}
 .score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -100,7 +88,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .sp-n{background:var(--s2);color:var(--sub)}
 
 /* ── SECTION ── */
-.sec{padding:0 var(--px);margin-bottom:30px}
+.sec{padding:0 28px;margin-bottom:28px}
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .sec-title{font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:var(--sub);font-weight:500}
 .sec-link{font-size:11px;color:var(--sub);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif;padding:3px 6px;border-radius:6px;transition:background .15s}
@@ -121,7 +109,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .wday-d.today{background:var(--white);border:1.5px solid var(--text);color:var(--text);font-weight:500}
 
 /* ── MIT ── */
-.mit-card{touch-action:manipulation;-webkit-tap-highlight-color:transparent;background:var(--white);border:1px solid var(--border);border-radius:13px;padding:13px 15px;margin-bottom:7px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .15s}
+.mit-card{background:var(--white);border:1px solid var(--border);border-radius:13px;padding:13px 15px;margin-bottom:7px;display:flex;align-items:center;gap:11px;cursor:pointer;transition:all .15s}
 .mit-card:active{transform:scale(.98)}
 .mit-card.done{opacity:.45}
 .mit-card.done .mit-txt{text-decoration:line-through}
@@ -132,7 +120,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .mit-card.empty .mit-txt{color:var(--sub2);font-style:italic}
 
 /* ── HABIT CARD ── */
-.hab-card{touch-action:manipulation;-webkit-tap-highlight-color:transparent;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px 15px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;user-select:none}
+.hab-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px 15px;display:flex;align-items:center;gap:12px;margin-bottom:8px;cursor:pointer;transition:all .15s;user-select:none}
 .hab-card:active{transform:scale(.98)}
 .hab-card.done{background:var(--s2)}
 .hab-card.skipped{opacity:.35}
@@ -157,7 +145,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .hab-card.done .hab-chk{background:var(--text);border-color:var(--text);color:var(--white)}
 
 /* ── TASK ── */
-.task-card{touch-action:manipulation;-webkit-tap-highlight-color:transparent;background:var(--white);border:1px solid var(--border);border-radius:13px;padding:13px 15px;display:flex;align-items:center;gap:11px;margin-bottom:7px;cursor:pointer;transition:all .15s}
+.task-card{background:var(--white);border:1px solid var(--border);border-radius:13px;padding:13px 15px;display:flex;align-items:center;gap:11px;margin-bottom:7px;cursor:pointer;transition:all .15s}
 .task-card:active{transform:scale(.98)}
 .task-card.done{opacity:.4}
 .task-card.done .task-txt{text-decoration:line-through}
@@ -170,7 +158,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .add-row input,.add-row select{flex:1;background:var(--white);border:1px solid var(--border);border-radius:11px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s;min-width:0}
 .add-row input::placeholder{color:var(--sub2)}
 .add-row input:focus{border-color:var(--text)}
-.add-btn{background:var(--text);color:var(--white);border:none;border-radius:11px;padding:11px 15px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:opacity .15s;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.add-btn{background:var(--text);color:var(--white);border:none;border-radius:11px;padding:11px 15px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap;transition:opacity .15s}
 .add-btn:active{opacity:.7}
 
 /* ── PROGRESS BAR ── */
@@ -197,7 +185,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .mit-plan-input{background:var(--s2);border:none;border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;width:100%;margin-bottom:7px;transition:background .2s}
 .mit-plan-input:focus{background:var(--white);border:1px solid var(--border);padding:10px 12px}
 .mit-plan-input::placeholder{color:var(--sub2)}
-.save-btn{width:100%;background:var(--text);color:var(--white);border:none;border-radius:11px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;margin-top:4px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.save-btn{width:100%;background:var(--text);color:var(--white);border:none;border-radius:11px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;margin-top:4px}
 .save-btn:active{opacity:.7}
 .review-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
 .review-row:last-child{border-bottom:none}
@@ -209,7 +197,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .rs-skip{background:var(--s2);color:var(--sub)}
 
 /* ── PROYECTOS ── */
-.proj-card{touch-action:manipulation;-webkit-tap-highlight-color:transparent;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:15px 16px;margin-bottom:9px;cursor:pointer;transition:all .15s}
+.proj-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:15px 16px;margin-bottom:9px;cursor:pointer;transition:all .15s}
 .proj-card:active{transform:scale(.99)}
 .proj-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
 .proj-name{font-size:14px;font-weight:500;color:var(--text);flex:1}
@@ -250,7 +238,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .radar-info{flex:1;min-width:0}
 .radar-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .radar-meta{font-size:11px;color:var(--sub);margin-top:2px}
-.materia-card{touch-action:manipulation;-webkit-tap-highlight-color:transparent;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:15px 16px;margin-bottom:9px;cursor:pointer;transition:all .15s;overflow:hidden;position:relative}
+.materia-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:15px 16px;margin-bottom:9px;cursor:pointer;transition:all .15s;overflow:hidden;position:relative}
 .materia-card:active{transform:scale(.99)}
 .materia-stripe{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
 .materia-body{padding-left:10px}
@@ -272,7 +260,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .calc-detail{font-size:12px;color:var(--sub);font-weight:300;line-height:1.5}
 
 /* ── FINANZAS ── */
-.balance-strip{margin:0 var(--px) 28px;background:var(--text);color:var(--white);border-radius:16px;padding:20px}
+.balance-strip{margin:0 28px 26px;background:var(--text);color:var(--white);border-radius:16px;padding:20px}
 .balance-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;opacity:.6;margin-bottom:4px}
 .balance-amount{font-family:'Lora',serif;font-size:36px;font-weight:400;letter-spacing:-.5px;line-height:1;margin-bottom:14px}
 .balance-row{display:flex;gap:14px}
@@ -299,55 +287,56 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .detail-overlay.open{display:flex}
 .detail-scroll{flex:1;overflow-y:auto;padding-bottom:30px}
 .detail-scroll::-webkit-scrollbar{display:none}
-.detail-hdr{padding:calc(var(--safe-t)+14px) 20px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:var(--bg)}
+.detail-hdr{padding:calc(var(--safe-t)+14px) 28px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:var(--bg)}
 .detail-back{background:var(--s2);border:none;border-radius:9px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--sub);cursor:pointer}
 .detail-title{font-family:'Lora',serif;font-size:18px;font-weight:400;flex:1}
 .detail-edit{background:var(--s2);border:none;border-radius:9px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--sub);cursor:pointer}
-.detail-sec{padding:16px 20px 0}
+.detail-sec{padding:16px 28px 0}
 .detail-sec-title{font-size:10px;letter-spacing:1.3px;text-transform:uppercase;color:var(--sub);font-weight:500;margin-bottom:10px}
 
 /* ── MODAL ── */
-.modal-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(24,24,20,.5);align-items:flex-end;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.modal-overlay{display:none;position:fixed;inset:0;z-index:100;background:rgba(24,24,20,.4);backdrop-filter:blur(4px);align-items:flex-end;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:var(--white);width:100%;max-width:430px;border-radius:22px 22px 0 0;padding:20px 24px calc(var(--safe-b)+28px);animation:slideUp .22s ease;max-height:88vh;overflow-y:auto;cursor:default;touch-action:pan-y}
+.modal{background:var(--white);width:100%;max-width:430px;border-radius:22px 22px 0 0;padding:18px 28px calc(var(--safe-b)+22px);animation:slideUp .22s ease;max-height:90vh;overflow-y:auto}
 .modal::-webkit-scrollbar{display:none}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .modal-handle{width:34px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 18px}
 .modal-title{font-family:'Lora',serif;font-size:18px;font-weight:400;margin-bottom:14px}
 .field-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--sub);font-weight:500;margin-bottom:6px;display:block;margin-top:12px}
 .field-label:first-of-type{margin-top:0}
-.field-input{width:100%;background:var(--s2);border:none;border-radius:12px;padding:13px 15px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:background .2s}
+.field-input{width:100%;background:var(--s2);border:none;border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:background .2s}
 .field-input:focus{background:var(--white);border:1px solid var(--border);padding:10px 12px}
 .field-input::placeholder{color:var(--sub2)}
 .field-select{width:100%;background:var(--s2);border:none;border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%23888880' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
-.modal-save{width:100%;background:var(--text);color:var(--white);border:none;border-radius:11px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;margin-top:14px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.modal-save{width:100%;background:var(--text);color:var(--white);border:none;border-radius:11px;padding:13px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:opacity .15s;margin-top:14px}
 .modal-save:active{opacity:.7}
-.modal-cancel{width:100%;background:var(--s2);color:var(--sub);border:none;border-radius:11px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;margin-top:7px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.modal-cancel{width:100%;background:var(--s2);color:var(--sub);border:none;border-radius:11px;padding:11px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;margin-top:7px}
 .ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
-.ctx-opt{padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.ctx-opt{padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:8px}
 .ctx-opt.sel{border-color:var(--text);background:var(--s2)}
 .ctx-opt-icon{font-size:16px}
 .ctx-opt-text{font-size:12px;font-weight:500}
 .ctx-opt-sub{font-size:10px;color:var(--sub)}
 .color-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-.color-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;transition:transform .15s;border:2px solid transparent;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.color-dot{width:26px;height:26px;border-radius:50%;cursor:pointer;transition:transform .15s;border:2px solid transparent}
 .color-dot.sel{border-color:var(--text);transform:scale(1.1)}
 
 /* ── FAB ── */
-
+.fab{position:fixed;bottom:calc(var(--safe-b)+88px);right:14px;z-index:50;width:44px;height:44px;background:var(--text);color:var(--white);border:none;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(24,24,20,.22);transition:all .2s}
+.fab:active{transform:scale(.9)}
 
 /* ── MOTIV BANNER ── */
-.motiv{margin:0 var(--px) 18px;background:var(--text);color:var(--white);border-radius:14px;padding:13px 17px;font-size:13px;font-weight:300;line-height:1.55;display:none}
+.motiv{margin:0 28px 18px;background:var(--text);color:var(--white);border-radius:14px;padding:13px 17px;font-size:13px;font-weight:300;line-height:1.55;display:none}
 .motiv.show{display:block;animation:fadeUp .3s ease}
 .motiv b{font-weight:500}
 
 /* ── BOTTOM NAV ── */
-.bnav{flex-shrink:0;background:rgba(248,248,246,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:14px 20px calc(var(--safe-b)+16px);display:flex;justify-content:space-around;align-items:center;z-index:10}
-.nb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--sub2);transition:color .15s;font-family:'DM Sans',sans-serif;min-width:56px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.bnav{flex-shrink:0;background:rgba(248,248,246,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:14px 12px calc(var(--safe-b)+14px);display:flex;justify-content:space-around;align-items:flex-end;z-index:10}
+.nb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 14px;border:none;background:none;cursor:pointer;color:var(--sub2);transition:color .15s;font-family:'DM Sans',sans-serif;min-width:56px}
 .nb.active{color:var(--text)}
 .nb-ico{font-size:20px;line-height:1}
 .nb-lbl{font-size:9px;font-weight:500;letter-spacing:.4px;text-transform:uppercase;margin-top:1px}
-.nb-cierre{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 18px;border:none;background:var(--text);color:var(--white);border-radius:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;min-width:68px;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.nb-cierre{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 18px;border:none;background:var(--text);color:var(--white);border-radius:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;min-width:68px}
 .nb-cierre:active{opacity:.7}
 .nb-cierre .nb-ico{font-size:16px}
 .nb-cierre .nb-lbl{font-size:9px;font-weight:600;letter-spacing:.3px;text-transform:uppercase}
@@ -366,8 +355,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .empty-icon{font-size:26px;margin-bottom:6px}
 
 /* ── PAGE HDR (simple pages) ── */
-.page-hdr{padding:calc(var(--safe-t)+36px) var(--px) 0;margin-bottom:20px}
-.divider{height:1px;background:var(--border);margin:0 var(--px) 20px}
+.page-hdr{padding:calc(var(--safe-t)+22px) 28px 0;margin-bottom:18px}
+.divider{height:1px;background:var(--border);margin:0 28px 18px}
 
 /* ── LOADING SCREEN ── */
 #loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
@@ -375,15 +364,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 .loading-logo i{font-style:italic;color:var(--sub)}
 .loading-dot{width:6px;height:6px;border-radius:50%;background:var(--text);animation:blink 1.2s infinite}
 @keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
-
-/* ── MÁRGENES GLOBALES ── */
-.hdr { padding-left: 28px !important; padding-right: 28px !important; }
-.hdr-date { padding-left: 28px !important; padding-right: 28px !important; }
-.sec { padding-left: 28px !important; padding-right: 28px !important; }
-.score-strip { margin-left: 28px !important; margin-right: 28px !important; }
-.balance-strip { margin-left: 28px !important; margin-right: 28px !important; }
-.motiv { margin-left: 28px !important; margin-right: 28px !important; }
-.page-hdr { padding-left: 28px !important; padding-right: 28px !important; }
 </style>
 </head>
 <body>
@@ -490,7 +470,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <div id="task-list"></div>
     <div class="add-row">
       <input id="task-in" placeholder="Agregar tarea..." onkeypress="if(event.key==='Enter')addTask()">
-      <button class="add-btn" id="btn-add-task">Agregar</button>
+      <button class="add-btn" onclick="addTask()">Agregar</button>
     </div>
   </div>
 </div>
@@ -547,7 +527,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
       <input class="mit-plan-input" id="mit-m1" placeholder="Prioridad 1...">
       <input class="mit-plan-input" id="mit-m2" placeholder="Prioridad 2...">
       <input class="mit-plan-input" id="mit-m3" placeholder="Prioridad 3 (opcional)...">
-      <button class="save-btn" id="btn-save-cierre">Guardar y cerrar el día ✓</button>
+      <button class="save-btn" onclick="saveCierre()">Guardar y cerrar el día ✓</button>
     </div>
   </div>
 </div>
@@ -557,7 +537,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
   <div class="hdr">
     <div class="hdr-row">
       <div><div class="pg-greeting">Desarrollo</div><div class="pg-title">Proyectos</div></div>
-      <button class="hdr-action" style="background:var(--text);color:var(--white);border:none;border-radius:10px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation" onclick="openModal('modal-proj')">+ Nuevo</button>
+      <button class="hdr-action" style="background:var(--text);color:var(--white);border:none;border-radius:10px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer" onclick="openModal('modal-proj')">+ Nuevo</button>
     </div>
   </div>
 
@@ -590,7 +570,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
   <div class="hdr">
     <div class="hdr-row">
       <div><div class="pg-greeting">Semestre actual</div><div class="pg-title">Univer<i>sidad</i></div></div>
-      <button class="hdr-action" style="background:var(--text);color:var(--white);border:none;border-radius:10px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation" onclick="openModal('modal-materia')">+ Materia</button>
+      <button class="hdr-action" style="background:var(--text);color:var(--white);border:none;border-radius:10px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer" onclick="openModal('modal-materia')">+ Materia</button>
     </div>
   </div>
 
@@ -616,7 +596,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
   <div class="hdr">
     <div class="hdr-row">
       <div><div class="pg-greeting">Control</div><div class="pg-title">Finan<i>zas</i></div></div>
-      <button class="hdr-action" style="background:var(--text);color:var(--white);border:none;border-radius:10px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;touch-action:manipulation" onclick="openModal('modal-fin-tx')">+ Registro</button>
+      <button class="hdr-action" style="background:var(--text);color:var(--white);border:none;border-radius:10px;padding:9px 14px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer" onclick="openModal('modal-fin-tx')">+ Registro</button>
     </div>
   </div>
 
@@ -667,7 +647,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 </div><!-- /scroll -->
 
 <!-- FAB -->
-<button id="fab" onclick="openModal('modal-fab')" style="position:fixed;bottom:calc(var(--safe-b) + 82px);right:20px;max-right:calc((100vw - 430px)/2 + 20px);z-index:50;width:44px;height:44px;background:var(--text);color:var(--white);border:none;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(24,24,20,.25);touch-action:manipulation;-webkit-tap-highlight-color:transparent">+</button>
+<button class="fab" id="fab" onclick="openModal('modal-fab')">+</button>
 
 <!-- BOTTOM NAV -->
 <nav class="bnav">
@@ -756,7 +736,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 ═══════════════════════════════ -->
 
 <!-- Perfil -->
-<div class="modal-overlay" id="modal-perfil">
+<div class="modal-overlay" id="modal-perfil" onclick="closeBg(event,'modal-perfil')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Mi perfil</div>
@@ -768,33 +748,33 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <div style="height:1px;background:var(--border);margin-bottom:14px"></div>
     <div style="font-size:12px;color:var(--sub);margin-bottom:8px;text-transform:uppercase;letter-spacing:.8px;font-weight:500">Modo activo</div>
     <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px" id="modo-btns-modal"></div>
-    <button class="modal-save" id="btn-logout" style="background:var(--r-bg);color:var(--r)">Cerrar sesión</button>
-    <button class="modal-cancel" id="btn-cancel-perfil">Cerrar</button>
+    <button class="modal-save" style="background:var(--r-bg);color:var(--r)" onclick="logout()">Cerrar sesión</button>
+    <button class="modal-cancel" onclick="closeModal('modal-perfil')">Cerrar</button>
   </div>
 </div>
 
 <!-- FAB quick capture -->
-<div class="modal-overlay" id="modal-fab">
+<div class="modal-overlay" id="modal-fab" onclick="closeBg(event,'modal-fab')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Captura rápida</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px">
-      <div class="ctx-opt" onclick="quickCapture('tarea')"><span class="ctx-opt-icon">📌</span><div><div class="ctx-opt-text">Tarea</div><div class="ctx-opt-sub">Para hoy</div></div></div>
-      <div class="ctx-opt" onclick="quickCapture('mit')"><span class="ctx-opt-icon">🎯</span><div><div class="ctx-opt-text">Prioridad</div><div class="ctx-opt-sub">MIT del día</div></div></div>
-      <div class="ctx-opt" onclick="quickCapture('proyecto')"><span class="ctx-opt-icon">🗂</span><div><div class="ctx-opt-text">Proyecto</div><div class="ctx-opt-sub">Tarea de proyecto</div></div></div>
-      <div class="ctx-opt" onclick="quickCapture('gasto')"><span class="ctx-opt-icon">💸</span><div><div class="ctx-opt-text">Gasto</div><div class="ctx-opt-sub">Registro rápido</div></div></div>
+      <div class="ctx-opt" onclick="quickCapture('tarea',this)"><span class="ctx-opt-icon">📌</span><div><div class="ctx-opt-text">Tarea</div><div class="ctx-opt-sub">Para hoy</div></div></div>
+      <div class="ctx-opt" onclick="quickCapture('mit',this)"><span class="ctx-opt-icon">🎯</span><div><div class="ctx-opt-text">Prioridad</div><div class="ctx-opt-sub">MIT del día</div></div></div>
+      <div class="ctx-opt" onclick="quickCapture('proyecto',this)"><span class="ctx-opt-icon">🗂</span><div><div class="ctx-opt-text">Proyecto</div><div class="ctx-opt-sub">Tarea de proyecto</div></div></div>
+      <div class="ctx-opt" onclick="quickCapture('gasto',this)"><span class="ctx-opt-icon">💸</span><div><div class="ctx-opt-text">Gasto</div><div class="ctx-opt-sub">Registro rápido</div></div></div>
     </div>
     <div style="margin-top:8px">
       <input class="field-input" id="fab-input" placeholder="¿Qué capturas?" onkeypress="if(event.key==='Enter')saveFab()">
       <div style="font-size:11px;color:var(--sub2);margin-top:6px;text-align:center" id="fab-type-label">Selecciona el tipo arriba</div>
     </div>
-    <button class="modal-save" id="btn-save-fab">Guardar</button>
-    <button class="modal-cancel" id="btn-cancel-fab">Cancelar</button>
+    <button class="modal-save" onclick="saveFab()">Guardar</button>
+    <button class="modal-cancel" onclick="closeModal('modal-fab')">Cancelar</button>
   </div>
 </div>
 
 <!-- MITs -->
-<div class="modal-overlay" id="modal-mit">
+<div class="modal-overlay" id="modal-mit" onclick="closeBg(event,'modal-mit')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Prioridades del día</div>
@@ -805,13 +785,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="m-mit2" placeholder="Segunda prioridad...">
     <label class="field-label">Prioridad 3</label>
     <input class="field-input" id="m-mit3" placeholder="Tercera prioridad...">
-    <button class="modal-save" id="btn-save-mits">Guardar prioridades</button>
-    <button class="modal-cancel" id="btn-cancel-mits">Cancelar</button>
+    <button class="modal-save" onclick="saveMits()">Guardar prioridades</button>
+    <button class="modal-cancel" onclick="closeModal('modal-mit')">Cancelar</button>
   </div>
 </div>
 
 <!-- Nuevo hábito -->
-<div class="modal-overlay" id="modal-add-hab">
+<div class="modal-overlay" id="modal-add-hab" onclick="closeBg(event,'modal-add-hab')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-hab-title">Nuevo hábito</div>
@@ -830,13 +810,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
       <label class="field-label">Nombre del modo</label>
       <input class="field-input" id="h-ctx-custom" placeholder="Ej: Semana de parciales">
     </div>
-    <button class="modal-save" id="btn-save-hab">Agregar hábito</button>
-    <button class="modal-cancel" id="btn-cancel-hab">Cancelar</button>
+    <button class="modal-save" onclick="saveHabit()">Agregar hábito</button>
+    <button class="modal-cancel" onclick="closeModal('modal-add-hab')">Cancelar</button>
   </div>
 </div>
 
 <!-- Proyecto -->
-<div class="modal-overlay" id="modal-proj">
+<div class="modal-overlay" id="modal-proj" onclick="closeBg(event,'modal-proj')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-proj-title">Nuevo proyecto</div>
@@ -850,13 +830,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="p-stack" placeholder="Ej: React, Node, Supabase">
     <label class="field-label">Próximo paso concreto</label>
     <input class="field-input" id="p-next" placeholder="¿Qué hay que hacer ahora mismo?">
-    <button class="modal-save" id="btn-save-proj">Guardar proyecto</button>
-    <button class="modal-cancel" id="btn-cancel-proj">Cancelar</button>
+    <button class="modal-save" onclick="saveProj()">Guardar proyecto</button>
+    <button class="modal-cancel" onclick="closeModal('modal-proj')">Cancelar</button>
   </div>
 </div>
 
 <!-- Sprint -->
-<div class="modal-overlay" id="modal-sprint">
+<div class="modal-overlay" id="modal-sprint" onclick="closeBg(event,'modal-sprint')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Sprint semanal</div>
@@ -868,13 +848,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="sp-start" type="date">
     <label class="field-label">Fecha fin</label>
     <input class="field-input" id="sp-end" type="date">
-    <button class="modal-save" id="btn-save-sprint">Guardar sprint</button>
-    <button class="modal-cancel" id="btn-cancel-sprint">Cancelar</button>
+    <button class="modal-save" onclick="saveSprint()">Guardar sprint</button>
+    <button class="modal-cancel" onclick="closeModal('modal-sprint')">Cancelar</button>
   </div>
 </div>
 
 <!-- Meta proyecto -->
-<div class="modal-overlay" id="modal-goal">
+<div class="modal-overlay" id="modal-goal" onclick="closeBg(event,'modal-goal')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Nueva meta</div>
@@ -882,13 +862,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="g-text" placeholder="Ej: Lanzar MVP, Implementar auth...">
     <label class="field-label">Alcance</label>
     <select class="field-select" id="g-scope"><option value="sprint">Esta semana</option><option value="month">Este mes</option><option value="project">Objetivo del proyecto</option></select>
-    <button class="modal-save" id="btn-save-goal">Agregar meta</button>
-    <button class="modal-cancel" id="btn-cancel-goal">Cancelar</button>
+    <button class="modal-save" onclick="saveGoal()">Agregar meta</button>
+    <button class="modal-cancel" onclick="closeModal('modal-goal')">Cancelar</button>
   </div>
 </div>
 
 <!-- Tarea kanban -->
-<div class="modal-overlay" id="modal-ktask">
+<div class="modal-overlay" id="modal-ktask" onclick="closeBg(event,'modal-ktask')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Nueva tarea</div>
@@ -896,13 +876,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="kt-text" placeholder="Ej: Conectar API, Diseñar modal...">
     <label class="field-label">Estado inicial</label>
     <select class="field-select" id="kt-status"><option value="todo">Por hacer</option><option value="doing">En progreso</option><option value="done">Listo</option></select>
-    <button class="modal-save" id="btn-save-ktask">Agregar tarea</button>
-    <button class="modal-cancel" id="btn-cancel-ktask">Cancelar</button>
+    <button class="modal-save" onclick="saveKTask()">Agregar tarea</button>
+    <button class="modal-cancel" onclick="closeModal('modal-ktask')">Cancelar</button>
   </div>
 </div>
 
 <!-- Materia -->
-<div class="modal-overlay" id="modal-materia">
+<div class="modal-overlay" id="modal-materia" onclick="closeBg(event,'modal-materia')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-materia-title">Nueva materia</div>
@@ -914,13 +894,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <div class="color-grid" id="color-grid"></div>
     <label class="field-label">Créditos</label>
     <input class="field-input" id="m-credits" type="number" placeholder="3" min="1" max="6">
-    <button class="modal-save" id="btn-save-materia">Guardar materia</button>
-    <button class="modal-cancel" id="btn-cancel-materia">Cancelar</button>
+    <button class="modal-save" onclick="saveMateria()">Guardar materia</button>
+    <button class="modal-cancel" onclick="closeModal('modal-materia')">Cancelar</button>
   </div>
 </div>
 
 <!-- Evaluación -->
-<div class="modal-overlay" id="modal-eval">
+<div class="modal-overlay" id="modal-eval" onclick="closeBg(event,'modal-eval')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Nueva evaluación</div>
@@ -932,13 +912,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="e-date" type="date">
     <label class="field-label">Nota obtenida (vacío si aún no hay)</label>
     <input class="field-input" id="e-nota" type="number" placeholder="—" step="0.1" min="0" max="5">
-    <button class="modal-save" id="btn-save-eval">Guardar evaluación</button>
-    <button class="modal-cancel" id="btn-cancel-eval">Cancelar</button>
+    <button class="modal-save" onclick="saveEval()">Guardar evaluación</button>
+    <button class="modal-cancel" onclick="closeModal('modal-eval')">Cancelar</button>
   </div>
 </div>
 
 <!-- Entrega -->
-<div class="modal-overlay" id="modal-entrega">
+<div class="modal-overlay" id="modal-entrega" onclick="closeBg(event,'modal-entrega')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Nueva entrega</div>
@@ -950,13 +930,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
     <input class="field-input" id="en-date" type="date">
     <label class="field-label">Peso en nota (%)</label>
     <input class="field-input" id="en-weight" type="number" placeholder="15" min="0" max="100">
-    <button class="modal-save" id="btn-save-entrega">Guardar entrega</button>
-    <button class="modal-cancel" id="btn-cancel-entrega">Cancelar</button>
+    <button class="modal-save" onclick="saveEntrega()">Guardar entrega</button>
+    <button class="modal-cancel" onclick="closeModal('modal-entrega')">Cancelar</button>
   </div>
 </div>
 
 <!-- Finanzas: movimiento -->
-<div class="modal-overlay" id="modal-fin-tx">
+<div class="modal-overlay" id="modal-fin-tx" onclick="closeBg(event,'modal-fin-tx')">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="modal-fin-title">Nuevo registro</div>
@@ -987,8 +967,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
       <label class="field-label">Fecha límite (opcional)</label>
       <input class="field-input" id="fin-due" type="date">
     </div>
-    <button class="modal-save" id="btn-save-fin">Guardar</button>
-    <button class="modal-cancel" id="btn-cancel-fin">Cancelar</button>
+    <button class="modal-save" onclick="saveFin()">Guardar</button>
+    <button class="modal-cancel" onclick="closeModal('modal-fin-tx')">Cancelar</button>
   </div>
 </div>
 
@@ -999,30 +979,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);max
 ═══════════════════════════════ -->
 <script>
 // ══════════════════════════════════════════
-// iOS BUTTON FIX — usar touchend en lugar de click en iOS
-// ══════════════════════════════════════════
-function isIOS(){ return /iPad|iPhone|iPod/.test(navigator.userAgent); }
-
-// Patch all buttons after DOM load to use touchend on iOS
-function patchButtons(){
-  if(!isIOS()) return;
-  document.querySelectorAll('button[onclick], [onclick]').forEach(el=>{
-    const handler = el.getAttribute('onclick');
-    if(!handler) return;
-    el.addEventListener('touchend', function(e){
-      e.preventDefault();
-      e.stopPropagation();
-      try{ eval(handler); }catch(err){}
-    }, {passive:false});
-  });
-}
-
-// ══════════════════════════════════════════
 // SUPABASE CONFIG — reemplaza con tus claves
 // ══════════════════════════════════════════
 const SUPABASE_URL = 'https://ffsyrjmidambnimuphdg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmc3lyam1pZGFtYm5pbXVwaGRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MTI5MjcsImV4cCI6MjA5MTA4ODkyN30.6aN_EBWbfhIxAUlp1w5M8fmoYmfOnJb6qFgx8jwvyVI';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb;
+try {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch(e) {
+  console.error('Supabase init error:', e);
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+}
+// Fallback: si Supabase no responde en 5s, quitar loading
+setTimeout(()=>{
+  const ls=document.getElementById('loading-screen');
+  if(ls && ls.style.display!=='none'){
+    ls.style.display='none';
+    document.getElementById('auth-screen').style.display='flex';
+  }
+},5000);
 
 // ══════════════════════════════════════════
 // STATE LOCAL (caché para velocidad)
@@ -1119,18 +1095,18 @@ async function logout(){
 async function loadAllData(){
   if(!currentUser) return;
   showSync();
-  const uid=currentUser.id;
+  const userId=currentUser.id;
   try {
     const [habRes,mitRes,taskRes,projRes,sprintRes,matRes,entRes,finRes,logRes] = await Promise.all([
-      sb.from('habits').select('*').eq('user_id',uid).order('created_at'),
-      sb.from('mits').select('*').eq('user_id',uid).eq('date',todayISO()).maybeSingle(),
-      sb.from('tasks').select('*').eq('user_id',uid).eq('date',todayISO()).order('created_at'),
-      sb.from('projects').select('*').eq('user_id',uid).order('created_at'),
-      sb.from('sprints').select('*').eq('user_id',uid).order('created_at',{ascending:false}).limit(1).maybeSingle(),
-      sb.from('materias').select('*').eq('user_id',uid).order('created_at'),
-      sb.from('entregas').select('*').eq('user_id',uid).order('date'),
-      sb.from('finanzas').select('*').eq('user_id',uid).order('created_at',{ascending:false}),
-      sb.from('daily_logs').select('*').eq('user_id',uid).eq('date',todayISO()).maybeSingle()
+      sb.from('habits').select('*').eq('user_id',userId).order('created_at'),
+      sb.from('mits').select('*').eq('user_id',userId).eq('date',todayISO()).maybeSingle(),
+      sb.from('tasks').select('*').eq('user_id',userId).eq('date',todayISO()).order('created_at'),
+      sb.from('projects').select('*').eq('user_id',userId).order('created_at'),
+      sb.from('sprints').select('*').eq('user_id',userId).order('created_at',{ascending:false}).limit(1).maybeSingle(),
+      sb.from('materias').select('*').eq('user_id',userId).order('created_at'),
+      sb.from('entregas').select('*').eq('user_id',userId).order('date'),
+      sb.from('finanzas').select('*').eq('user_id',userId).order('created_at',{ascending:false}),
+      sb.from('daily_logs').select('*').eq('user_id',userId).eq('date',todayISO()).maybeSingle()
     ]);
 
     D.habits    = habRes.data||[];
@@ -1895,10 +1871,10 @@ function buildFinanzas(){
 // ══════════════════════════════════════════
 // FAB
 // ══════════════════════════════════════════
-function quickCapture(type){
+function quickCapture(type,el){
   _fabType=type;
   document.querySelectorAll('#modal-fab .ctx-opt').forEach(o=>o.classList.remove('sel'));
-  event.currentTarget.classList.add('sel');
+  if(el)el.classList.add('sel');
   const labels={tarea:'Escribe la tarea...',mit:'Escribe la prioridad...',proyecto:'Escribe la tarea del proyecto...',gasto:'Descripción del gasto...'};
   document.getElementById('fab-input').placeholder=labels[type]||'¿Qué capturas?';
   document.getElementById('fab-type-label').textContent={tarea:'→ Se agrega a tareas de hoy',mit:'→ Se agrega como prioridad del día',proyecto:'→ Se agrega al proyecto activo',gasto:'→ Se registra como gasto'}[type]||'';
@@ -1914,7 +1890,7 @@ async function saveFab(){
     const idx=D.mits.findIndex(m=>!m.trim()); if(idx>=0){D.mits[idx]=v; buildMits(); await sb.from('mits').upsert({user_id:currentUser.id,date:todayISO(),mit1:D.mits[0],mit2:D.mits[1],mit3:D.mits[2]},{onConflict:'user_id,date'});}
     else toast('Ya tienes 3 prioridades definidas');
   } else if(_fabType==='gasto'){
-    const tx={id:uid(),user_id:currentUser.id,type:'gasto',desc:v,amount:0,cat:'otro',done:false,date:todayISO(),created_at:new Date().toISOString()};
+    const tx={id:uid(),user_id:currentUser.id,type:'gasto',description:v,amount:0,cat:'otro',done:false,date:todayISO(),created_at:new Date().toISOString()};
     D.finanzas.unshift(tx); await sb.from('finanzas').insert(tx); buildFinanzas(); toast('Gasto capturado — agrega el monto en Finanzas');
     document.getElementById('fab-input').value=''; closeModal('modal-fab'); return;
   }
@@ -1942,18 +1918,9 @@ function openModal(id){
   if(id==='modal-sprint'&&D.sprint){document.getElementById('sp-name').value=D.sprint.name||'';document.getElementById('sp-goal').value=D.sprint.goal||'';document.getElementById('sp-start').value=D.sprint.start_date||todayISO();document.getElementById('sp-end').value=D.sprint.end_date||todayISO();}
   if(id==='modal-perfil')buildPerfilModal();
   if(id==='modal-fin-tx'){document.getElementById('fin-type').value='gasto';updateFinModal();}
-  const el=document.getElementById(id);
-  el.classList.add('open');
-  // iOS fix: tap on overlay closes modal, tap on modal content does NOT
-  el.ontouchstart=function(e){ if(e.target===el) closeModal(id); };
-  el.onclick=function(e){ if(e.target===el) closeModal(id); };
+  document.getElementById(id).classList.add('open');
 }
-function closeModal(id){
-  const el=document.getElementById(id);
-  el.classList.remove('open');
-  el.ontouchstart=null;
-  el.onclick=null;
-}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
 function closeBg(e,id){if(e.target.id===id)closeModal(id);}
 function openDetail(id){document.getElementById(id).classList.add('open');}
 function closeDetail(id){document.getElementById(id).classList.remove('open');}
@@ -1969,7 +1936,11 @@ function buildPerfilModal(){
   document.getElementById('perfil-email-big').textContent=userProfile.email||'—';
   const allModes=['normal',...D.habits.filter(h=>h.ctx==='custom'&&h.ctx_name).map(h=>h.ctx_name).filter((v,i,a)=>a.indexOf(v)===i),'parcial','finde'];
   const modeBtns=document.getElementById('modo-btns-modal');
-  modeBtns.innerHTML=allModes.map(m=>`<button onclick="setMode('${m}')" style="padding:6px 13px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1.5px solid ${D.activeMode===m?'var(--text)':'var(--border)'};background:${D.activeMode===m?'var(--text)':'var(--white)'};color:${D.activeMode===m?'var(--white)':'var(--sub)'};font-family:'DM Sans',sans-serif">${m==='normal'?'Normal':m==='parcial'?'Lun–Vie':m==='finde'?'Fin de semana':m}</button>`).join('');
+  modeBtns.innerHTML=allModes.map(m=>{
+    const isActive=D.activeMode===m;
+    const label=m==='normal'?'Normal':m==='parcial'?'Lun–Vie':m==='finde'?'Fin de semana':m;
+    return `<button onclick="setMode('${m}')" style="padding:6px 13px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:1.5px solid ${isActive?'var(--text)':'var(--border)'};background:${isActive?'var(--text)':'var(--white)'};color:${isActive?'var(--white)':'var(--sub)'};font-family:DM Sans,sans-serif">${label}</button>`;
+  }).join('');
 }
 
 function setMode(m){D.activeMode=m;buildHabits();buildPerfilModal();toast(`Modo: ${m}`);}
@@ -1981,127 +1952,44 @@ let _tt;
 function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('show'),2200);}
 
 // ══════════════════════════════════════════
-// FAB — position dynamically above CIERRE button
-// ══════════════════════════════════════════
-function positionFab(){
-  const cierre = document.querySelector('.nb-cierre');
-  const fab = document.getElementById('fab');
-  if(!cierre || !fab) return;
-  const rect = cierre.getBoundingClientRect();
-  const centerX = rect.left + rect.width/2;
-  fab.style.bottom = (window.innerHeight - rect.top + 10) + 'px';
-  fab.style.left = (centerX - 22) + 'px';
-  fab.style.right = 'auto';
-}
-window.addEventListener('resize', positionFab);
-document.addEventListener('DOMContentLoaded', function(){ setTimeout(patchButtons, 500); });
-setTimeout(positionFab, 300);
-
-// ══════════════════════════════════════════
 // INIT — Auth listener
 // ══════════════════════════════════════════
-sb.auth.onAuthStateChange(async(event,session)=>{
-  document.getElementById('loading-screen').style.display='none';
-  if(session?.user){
-    currentUser=session.user;
-    userProfile={...session.user.user_metadata,email:session.user.email};
-    const initls=initials(userProfile.full_name||userProfile.email);
-    document.getElementById('user-avatar').textContent=initls;
-    document.getElementById('cierre-avatar').textContent=initls;
-    document.getElementById('user-name-hdr').innerHTML=`${userProfile.full_name||'Tú'} <i>hoy</i>`;
-    document.getElementById('auth-screen').style.display='none';
-    document.getElementById('app-shell').style.display='flex';
-    await loadAllData();
-    buildWeek(); buildMits(); buildHabits(); buildTasks();
-    buildSprint(); buildProjects(); buildMaterias(); buildRadar();
-    buildFinanzas(); updateScore();
-    // Default dates
-    const ti=todayISO();
-    ['sp-start','sp-end','e-date','en-date'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=ti;});
-  } else {
-    document.getElementById('auth-screen').style.display='flex';
-    document.getElementById('app-shell').style.display='none';
-  }
-});
-</script>
-
-<script>
-// ═══════════════════════════════════════
-// GLOBAL iOS TAP FIX
-// iOS Safari a veces ignora onclick. Este listener
-// captura touchend y ejecuta el onclick manualmente.
-// ═══════════════════════════════════════
-(function(){
-  var lastTouch = 0;
-  document.addEventListener('touchend', function(e){
-    var now = Date.now();
-    if(now - lastTouch < 300) return; // debounce
-    lastTouch = now;
-    
-    var el = e.target;
-    // Buscar el elemento clickeable más cercano
-    for(var i = 0; i < 6; i++){
-      if(!el) break;
-      if(el.onclick || el.getAttribute('onclick')){
-        e.preventDefault();
-        if(typeof el.onclick === 'function'){
-          el.onclick(e);
-        } else {
-          var fn = el.getAttribute('onclick');
-          if(fn) try{ eval(fn); }catch(err){}
-        }
-        return;
+if(sb){
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    try {
+      document.getElementById('loading-screen').style.display='none';
+      if(session?.user){
+        currentUser=session.user;
+        userProfile={...session.user.user_metadata,email:session.user.email};
+        const initls=initials(userProfile.full_name||userProfile.email);
+        document.getElementById('user-avatar').textContent=initls;
+        document.getElementById('cierre-avatar').textContent=initls;
+        document.getElementById('user-name-hdr').innerHTML=`${userProfile.full_name||'Tú'} <i>hoy</i>`;
+        document.getElementById('auth-screen').style.display='none';
+        document.getElementById('app-shell').style.display='flex';
+        await loadAllData();
+        buildWeek(); buildMits(); buildHabits(); buildTasks();
+        buildSprint(); buildProjects(); buildMaterias(); buildRadar();
+        buildFinanzas(); updateScore();
+        // Default dates
+        const ti=todayISO();
+        ['sp-start','sp-end','e-date','en-date'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=ti;});
+      } else {
+        document.getElementById('auth-screen').style.display='flex';
+        document.getElementById('app-shell').style.display='none';
       }
-      el = el.parentElement;
+    } catch(e){
+      console.error('Auth state error:',e);
+      document.getElementById('loading-screen').style.display='none';
+      document.getElementById('auth-screen').style.display='flex';
     }
-  }, {passive:false});
-})();
-
-// ══════════════════════════════════════════
-// BUTTON LISTENERS — iOS safe, no onclick
-// ══════════════════════════════════════════
-function bindBtn(id, fn) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  ['click','touchend'].forEach(evt => {
-    el.addEventListener(evt, function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      fn();
-    }, { passive: false });
   });
+} else {
+  // Supabase no cargó — mostrar auth con error
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  document.getElementById('auth-err').textContent='Error: verifica tus claves de Supabase';
 }
-
-function initButtons() {
-  bindBtn('btn-save-mits',    saveMits);
-  bindBtn('btn-cancel-mits',  () => closeModal('modal-mit'));
-  bindBtn('btn-save-hab',     saveHabit);
-  bindBtn('btn-cancel-hab',   () => closeModal('modal-add-hab'));
-  bindBtn('btn-save-proj',    saveProj);
-  bindBtn('btn-cancel-proj',  () => closeModal('modal-proj'));
-  bindBtn('btn-save-sprint',  saveSprint);
-  bindBtn('btn-cancel-sprint',() => closeModal('modal-sprint'));
-  bindBtn('btn-save-goal',    saveGoal);
-  bindBtn('btn-cancel-goal',  () => closeModal('modal-goal'));
-  bindBtn('btn-save-ktask',   saveKTask);
-  bindBtn('btn-cancel-ktask', () => closeModal('modal-ktask'));
-  bindBtn('btn-save-materia', saveMateria);
-  bindBtn('btn-cancel-materia',() => closeModal('modal-materia'));
-  bindBtn('btn-save-eval',    saveEval);
-  bindBtn('btn-cancel-eval',  () => closeModal('modal-eval'));
-  bindBtn('btn-save-entrega', saveEntrega);
-  bindBtn('btn-cancel-entrega',() => closeModal('modal-entrega'));
-  bindBtn('btn-save-fin',     saveFin);
-  bindBtn('btn-cancel-fin',   () => closeModal('modal-fin-tx'));
-  bindBtn('btn-save-fab',     saveFab);
-  bindBtn('btn-cancel-fab',   () => closeModal('modal-fab'));
-  bindBtn('btn-logout',       logout);
-  bindBtn('btn-cancel-perfil',() => closeModal('modal-perfil'));
-  bindBtn('btn-save-cierre',  saveCierre);
-  bindBtn('btn-add-task',     addTask);
-}
-
-document.addEventListener('DOMContentLoaded', initButtons);
 </script>
 </body>
 </html>
